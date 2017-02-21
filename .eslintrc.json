@@ -1,0 +1,11 @@
+{
+  "extends": "dstil",
+  "rules": {
+    "camelcase": "off",
+    "eqeqeq": "off",
+    "import/no-commonjs": "off",
+    "no-console": "off",
+    "quotes": "off",
+    "valid-jsdoc": "off"
+  }
+}
