@@ -56,7 +56,7 @@ function run_demo(neuron) {
 }
 
 let training_set = create_int_dataset(500000);
-let test_set = create_int_dataset(5000);
+let test_set = create_int_dataset(50000);
 let n = new neuron.Neuron(2, 0, 2);
 n.activation = (z) => round_n_places(z, 3);
 
@@ -72,7 +72,7 @@ for (let epoch = 0; epoch < total_epoch; epoch++) {
   for (let i = 0; i < training_set[0].length; i++) {
     let Xi = training_set[0][i];
     let y1 = training_set[1][i];
-    let y2 = n.forward(training_set[0][i]);
+    let y2 = n.forward(Xi);
     let c = cost(y1,y2);
     let dc = cost_derivative(y1,y2);
     // console.log('dc - ' + dc + ' n.output - ' + n.output);
