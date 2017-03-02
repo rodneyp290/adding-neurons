@@ -58,7 +58,7 @@ function run_demo(neuron) {
 let training_set = create_int_dataset(500000);
 let test_set = create_int_dataset(50000);
 let n = new neuron.Neuron(2, 0, 2);
-n.activation = (z) => round_n_places(z, 3);
+
 
 let total_epoch = 100;
 let prev_Xi = 0;
