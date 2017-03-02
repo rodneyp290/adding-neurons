@@ -42,7 +42,7 @@ function create_int_dataset(size) {
   return [inputs, labels];
 }
 
-demo_int_set = create_int_dataset(10)
+const demo_int_set = create_int_dataset(10)
 function run_demo(neuron) {
   for (let i = 0; i < demo_int_set[0].length; i++) {
     let xi = demo_int_set[0][i];
@@ -50,11 +50,13 @@ function run_demo(neuron) {
     let x2 = demo_int_set[0][i][1];
     let y1 = demo_int_set[1][i];
     let y2 = n.forward(xi);
-    console.log('Expected : ' + x1 + ' + ' + x2 + ' = ' + y1 );
-    console.log('Received : ' + x1 + ' + ' + x2 + ' = ' + y2 + '(cost: ' + cost(y1,y2) + ')' );
+    console.log('Expected : ' + x1 + ' + ' + x2 + ' = ' + y1);
+    console.log('Received : ' + x1 + ' + ' + x2 + ' = ' + y2 + '(cost: ' + cost(y1,y2) + ')');
   }
 }
 
+
+const ERROR_MARGIN = 5;
 let training_set = create_int_dataset(500000);
 let test_set = create_int_dataset(50000);
 let n = new neuron.Neuron(2, 0, 2);
@@ -90,7 +92,7 @@ for (let epoch = 0; epoch < total_epoch; epoch++) {
       console.log('c: ' + c);
       console.log(prev_n);
       console.log(n);
-      exit();
+      process.exit(1);
     } else {
       // console.log('W: ' + n.weights);
       // console.log('Wg: ' + (n.w_grads));
@@ -108,13 +110,13 @@ for (let epoch = 0; epoch < total_epoch; epoch++) {
   let sum_cost = 0;
   let correct = 0;
   for (let i = 0; i < test_set.length; i++) {
-    let y1 = test_set[1][i]
+    let y1 = test_set[1][i];
     let y2 = n.forward(test_set[0][i]);
     let c = cost(y1,y2);
     // console.log('y1: ' + y1);
     // console.log('y2: ' + y2);
     // console.log('c: ' + c);
-    if (c === 0) {
+    if (Math.abs(y1-y2) <= y1 * (ERROR_MARGIN/100)) {
       correct++;
     } else {
       sum_cost += c;
@@ -123,7 +125,7 @@ for (let epoch = 0; epoch < total_epoch; epoch++) {
   console.log('epoch ' + epoch + '/' + total_epoch + ' completed');
   console.log('learning rate: ', lr);
   console.log('Acurracy:');
-  console.log('  ' + correct + '/' + test_set[1].length + ' correct to ' + PRECISION + ' decimal places');
+  console.log('  ' + correct + '/' + test_set[1].length + ' correct within -/+' + ERROR_MARGIN + '%');
   console.log('  Sum Cost: ' + sum_cost/test_set[1].length);
   console.log('  Average Cost (Whole Pop): ' + sum_cost/test_set[1].length);
   console.log('  Average Cost (Incorrect Pop): ' + sum_cost/(test_set[1].length-correct));
