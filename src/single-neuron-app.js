@@ -10,18 +10,6 @@ const f = (x,y) => (x + y);
 
 utils.seed_random(2017);
 
-function create_dataset(size) {
-  let inputs = [];
-  let labels = [];
-  for (let i = 0; i < size; i++) {
-    let input = utils.create_random_array(2, -1, 1);
-    let output = f(input[0], input[1], input[2])
-    inputs.push(input);
-    labels.push(output);
-  }
-  return [inputs, labels];
-}
-
 function cost(y1, y2) {
   return ((1/2)*((y1-y2)**2));
 }
@@ -30,25 +18,23 @@ function cost_derivative(y1, y2) {
   return ((y1-y2)/1);
 }
 
-function create_int_dataset(size) {
-  let inputs = [];
-  let labels = [];
+function create_dataset(size) {
+  let data = [];
   for (let i = 0; i < size; i++) {
     let input = utils.create_random_int_array(2, 0, 100);
-    let output = f(input[0], input[1], input[2])
-    inputs.push(input);
-    labels.push(output);
+    let label = f(input[0], input[1], input[2])
+    data.push([input, label]);
   }
-  return [inputs, labels];
+  return data;
 }
 
 const demo_int_set = create_int_dataset(10)
 function run_demo(neuron) {
-  for (let i = 0; i < demo_int_set[0].length; i++) {
-    let xi = demo_int_set[0][i];
-    let x1 = demo_int_set[0][i][0];
-    let x2 = demo_int_set[0][i][1];
-    let y1 = demo_int_set[1][i];
+  for (let i = 0; i < demo_int_set.length; i++) {
+    let xi = demo_int_set[i][0];
+    let x1 = demo_int_set[i][0][0];
+    let x2 = demo_int_set[i][0][1];
+    let y1 = demo_int_set[i][1];
     let y2 = n.forward(xi);
     console.log('Expected : ' + x1 + ' + ' + x2 + ' = ' + y1);
     console.log('Received : ' + x1 + ' + ' + x2 + ' = ' + y2 + '(cost: ' + cost(y1,y2) + ')');
@@ -71,9 +57,9 @@ let prev_n = JSON.stringify(n);
 
 for (let epoch = 0; epoch < total_epoch; epoch++) {
   let lr = 1/(2*10000*(epoch+1))
-  for (let i = 0; i < training_set[0].length; i++) {
-    let Xi = training_set[0][i];
-    let y1 = training_set[1][i];
+  for (let i = 0; i < training_set.length; i++) {
+    let Xi = training_set[i][0];
+    let y1 = training_set[i][1];
     let y2 = n.forward(Xi);
     let c = cost(y1,y2);
     let dc = cost_derivative(y1,y2);
@@ -109,26 +95,24 @@ for (let epoch = 0; epoch < total_epoch; epoch++) {
   }
   let sum_cost = 0;
   let correct = 0;
-  for (let i = 0; i < test_set.length; i++) {
-    let y1 = test_set[1][i];
-    let y2 = n.forward(test_set[0][i]);
+  for (let i = 0; i < test_set[0].length; i++) {
+    let y1 = test_set[i][1];
+    let y2 = n.forward(test_set[i][0]);
     let c = cost(y1,y2);
     // console.log('y1: ' + y1);
     // console.log('y2: ' + y2);
     // console.log('c: ' + c);
-    if (Math.abs(y1-y2) <= y1 * (ERROR_MARGIN/100)) {
+    if (Math.abs(y1-y2) <= (y1 * (ERROR_MARGIN/100))) {
       correct++;
-    } else {
-      sum_cost += c;
     }
+    sum_cost += c;
   }
   console.log('epoch ' + epoch + '/' + total_epoch + ' completed');
   console.log('learning rate: ', lr);
   console.log('Acurracy:');
-  console.log('  ' + correct + '/' + test_set[1].length + ' correct within -/+' + ERROR_MARGIN + '%');
-  console.log('  Sum Cost: ' + sum_cost/test_set[1].length);
-  console.log('  Average Cost (Whole Pop): ' + sum_cost/test_set[1].length);
-  console.log('  Average Cost (Incorrect Pop): ' + sum_cost/(test_set[1].length-correct));
+  console.log('  ' + correct + '/' + test_set.length + ' correct within -/+' + ERROR_MARGIN + '%');
+  console.log('  Sum Cost: ' + sum_cost/test_set.length);
+  console.log('  Average Cost (Whole Pop): ' + sum_cost/test_set.length);
 
   run_demo(n);
 }
