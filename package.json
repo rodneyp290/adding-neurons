@@ -11,6 +11,7 @@
   "dependencies": {
     "eslint": "^3.15.0",
     "eslint-config-dstil": "git+ssh://git@github.com/dstil/eslint-config-dstil.git",
+    "express": "^4.15.2",
     "numeric": "^1.2.6"
   }
 }
