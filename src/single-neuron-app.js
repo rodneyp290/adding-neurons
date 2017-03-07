@@ -28,7 +28,7 @@ function create_dataset(size) {
   return data;
 }
 
-const demo_int_set = create_int_dataset(10)
+const demo_int_set = create_dataset(2)
 function run_demo(neuron) {
   for (let i = 0; i < demo_int_set.length; i++) {
     let xi = demo_int_set[i][0];
@@ -37,24 +37,19 @@ function run_demo(neuron) {
     let y1 = demo_int_set[i][1];
     let y2 = n.forward(xi);
     console.log('Expected : ' + x1 + ' + ' + x2 + ' = ' + y1);
-    console.log('Received : ' + x1 + ' + ' + x2 + ' = ' + y2 + '(cost: ' + cost(y1,y2) + ')');
+    console.log('Received : ' + x1 + ' + ' + x2 + ' = ' + y2);
   }
 }
 
 
-const ERROR_MARGIN = 5;
-let training_set = create_int_dataset(500000);
-let test_set = create_int_dataset(50000);
+const ERROR_MARGIN = 0.025;
+let training_set = create_dataset(500000);
+let test_set = create_dataset(50000);
 let n = new neuron.Neuron(2, 0, 2);
 
 
-let total_epoch = 100;
-let prev_Xi = 0;
-let prev_y1 = 0;
-let prev_y2 = 0;
-let prev_dc = 0;
-let prev_n = JSON.stringify(n);
-
+let total_epoch = 10;
+run_demo()
 for (let epoch = 0; epoch < total_epoch; epoch++) {
   let lr = 1/(2*10000*(epoch+1))
   for (let i = 0; i < training_set.length; i++) {
@@ -63,45 +58,20 @@ for (let epoch = 0; epoch < total_epoch; epoch++) {
     let y2 = n.forward(Xi);
     let c = cost(y1,y2);
     let dc = cost_derivative(y1,y2);
-    // console.log('dc - ' + dc + ' n.output - ' + n.output);
-    // console.log(!(isFinite(dc) && isFinite(n.output)));
     if (i>0&&!(isFinite(dc) && isFinite(n.output) && isFinite(n.w_grads[0]) && isFinite(n.i_grads[0]))) {
-      console.log('lr: ' + lr);
-      console.log('prev_y1: ' + prev_y1);
-      console.log('y1: ' + y1);
-      console.log('prev_Xi: ' + prev_Xi);
-      console.log('Xi: ' + Xi);
-      console.log('prev_y2: ' + prev_y2);
-      console.log('y2: ' + y2);
-      console.log('prev_dc: ' + prev_dc);
-      console.log('dc: ' + dc);
-      console.log('c: ' + c);
-      console.log(prev_n);
-      console.log(n);
+      console.err("AHHH! INFINITE NUMBERS!!");
       process.exit(1);
     } else {
-      // console.log('W: ' + n.weights);
-      // console.log('Wg: ' + (n.w_grads));
-      // console.log('Wgrs: ' + numeric.mul(numeric.sub(n.w_grads, n.weights), lr));
     }
-    prev_Xi = Xi;
-    prev_y1 = y1;
-    prev_y2 = y2;
-    prev_dc = dc;
-    prev_n = JSON.parse(JSON.stringify(n));
-    prev_n.__proto__ = neuron.Neuron.prototype;
     n.backpropagate(dc);
     n.learn_from_grads(lr);
   }
   let sum_cost = 0;
   let correct = 0;
-  for (let i = 0; i < test_set[0].length; i++) {
+  for (let i = 0; i < test_set.length; i++) {
     let y1 = test_set[i][1];
     let y2 = n.forward(test_set[i][0]);
     let c = cost(y1,y2);
-    // console.log('y1: ' + y1);
-    // console.log('y2: ' + y2);
-    // console.log('c: ' + c);
     if (Math.abs(y1-y2) <= (y1 * (ERROR_MARGIN/100))) {
       correct++;
     }
@@ -110,9 +80,10 @@ for (let epoch = 0; epoch < total_epoch; epoch++) {
   console.log('epoch ' + epoch + '/' + total_epoch + ' completed');
   console.log('learning rate: ', lr);
   console.log('Acurracy:');
-  console.log('  ' + correct + '/' + test_set.length + ' correct within -/+' + ERROR_MARGIN + '%');
-  console.log('  Sum Cost: ' + sum_cost/test_set.length);
-  console.log('  Average Cost (Whole Pop): ' + sum_cost/test_set.length);
+  let correct_prcnt = Math.floor(100*(100*correct / test_set.length))/100;
+  console.log('  ' + correct + '/' + test_set.length + '(' + correct_prcnt + '%) correct within -/+' + ERROR_MARGIN + '%');
+  //console.log('  Sum Cost: ' + sum_cost/test_set.length);
+  //console.log('  Average Cost (Whole Pop): ' + sum_cost/test_set.length);
 
   run_demo(n);
 }
