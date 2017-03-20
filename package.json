@@ -4,7 +4,7 @@
   "description": "Simple Project to learn about Neural Networks by creating one to learn to add to numbers together",
   "main": "src/app.js",
   "scripts": {
-    "test": "node src/app.js"
+    "single-neuron": "node src/single-neuron-app.js"
   },
   "author": "Rodney Pilgrim <rodneyp290@gmail.com>",
   "license": "ISC",
