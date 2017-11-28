@@ -1,3 +1,5 @@
+const numeric = require('numeric');
+
 function seed_random (seed) {
   numeric.seedrandom.seedrandom(seed)
 }
