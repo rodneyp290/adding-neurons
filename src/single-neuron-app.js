@@ -1,7 +1,7 @@
 const utils = require('../src/utils.js');
 const neuron = require('../src/neuron.js');
 
-// rounding utility function 
+// rounding utility function
 function round_n_places(number, places) {
   return Math.floor((number * (10**places)+0.5))/(10**places)
 }

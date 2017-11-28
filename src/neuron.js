@@ -30,7 +30,7 @@ class Neuron {
   }
 
   /***
-  * Aggregation function to join all the inputs together for
+  * Aggregation function to combine all the inputs together for
   * activation
   **/
   aggregation(inputs) {
@@ -80,7 +80,7 @@ class Neuron {
     // inner function, we can focus on inputs*weights.
     // this means each gradient is now just input*weights
     // so we are looking at a linear function a(w, i) = iw again.
-    // thus a'(w) = i
+    // thus a'(w) = i*w
     // (da/dW)
     let weight_grads = numeric.mul(this.inputs, grad);
     // (da/dI)
@@ -99,5 +99,5 @@ class Neuron {
     this.weights = numeric.add(this.weights, step);
   }
 }
-//
+// Export Neuron class
 module.exports = { Neuron }
