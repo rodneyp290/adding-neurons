@@ -59,7 +59,7 @@ let n = new neuron.Neuron(2, 0, 2);
 let total_epoch = 10;
 
 // run demo to see output with random weights
-run_demo()
+run_demo();
 
 // Loop through training and testing
 for (let epoch = 0; epoch < total_epoch; epoch++) {
@@ -73,10 +73,9 @@ for (let epoch = 0; epoch < total_epoch; epoch++) {
     let output = n.forward(inputs);
     let c = cost(label,output);
     let dc = cost_derivative(label,output);
-    if ( i > 0 && !(isFinite(dc) && isFinite(n.output) && isFinite(n.w_grads[0]) && isFinite(n.i_grads[0]))) {
+    if ( i > 0 && !(isFinite(dc) && isFinite(output) && isFinite(n.w_grads[0]) && isFinite(n.i_grads[0]))) {
       console.error("AHHH! INFINITE NUMBERS!!");
       process.exit(1);
-    } else {
     }
     n.backpropagate(dc);
     n.learn_from_grads(lr);

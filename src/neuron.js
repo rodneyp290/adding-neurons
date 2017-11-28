@@ -17,21 +17,16 @@ class Neuron {
     this.weights = utils.create_random_array(input_size, w_min, w_max);
     this.w_grads = numeric.rep(0, input_size);
     this.i_grads = numeric.rep(0, input_size);
-    this.final_grad = 0;
-    this.output = 0;
   }
 
   /***
    * Forwards the inputs through the neuron storing the intermediate
    * values which may be needed for for back propagation
-   * TODO: Change unnecessary class variables into local variables once
-   *       backprop/learning is working
    **/
   forward(inputs) {
     this.inputs = inputs;
-    this.agg_inputs = this.aggregation(inputs);
-    this.output = this.activation(this.agg_inputs);
-    return this.output;
+    let agg_inputs = this.aggregation(inputs);
+    return this.activation(agg_inputs);
   }
 
   /***
@@ -39,9 +34,8 @@ class Neuron {
   * activation
   **/
   aggregation(inputs) {
-    let weighted = numeric.mul(inputs, this.weights);
-    let weightedSum = numeric.sum(weighted);
-    return weightedSum;
+    let weighted_i = numeric.mul(inputs, this.weights);
+    return numeric.sum(weighted_i);
   }
 
   /***
@@ -59,9 +53,8 @@ class Neuron {
    * to be used to learn
    **/
   backpropagate(grad) {
-    this.final_grad = grad;
-    this.pre_act_grad = this.derive_activation(grad);
-    let grads = this.derive_aggregation(grad);
+    let pre_act_grad = this.derive_activation(grad)
+    let grads = this.derive_aggregation(pre_act_grad);
     this.i_grads = grads[0];
     this.w_grads = grads[1];
     return this.i_grads;
