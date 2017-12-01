@@ -96,7 +96,7 @@ class Neuron {
     step_size = (step_size === undefined) ? 0.005 : step_size;
     let regularised_grads = numeric.sub(this.w_grads, this.weights);
     let step = numeric.mul(regularised_grads, step_size);
-    this.weights = numeric.add(this.weights, step);
+    this.weights = numeric.sub(this.weights, step);
   }
 }
 // Export Neuron class

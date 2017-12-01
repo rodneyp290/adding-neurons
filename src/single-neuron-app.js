@@ -13,12 +13,12 @@ utils.seed_random(2017);
 
 // Sum of Squared Errors, divided by 2
 function cost(label, output) {
-  return ((1/2)*((label-output)**2));
+  return ((label-output)**2);
 }
 
 // Cost derivative with respect to neuron output
 function cost_derivative(label, output) {
-  return (label-output);
+  return -2*(label-output);
 }
 
 // creates dataset of summed integers of a given size
