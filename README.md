@@ -5,6 +5,10 @@ simple example of addition.
 
 Currently, I have written a Neuron class that has been used in the example src/single-neuron-app.js
 
+To run you'll first need to run `npm install` to grab the dependencies.
+
+The single neuron example can then be run by the command `npm run single-neuron`.
+
 ## Curent Goals
 
 - Write a network example that uses a standard activation function such as sigmoid, or ReLU.
