@@ -17,31 +17,25 @@ class Neuron {
     this.weights = utils.create_random_array(input_size, w_min, w_max);
     this.w_grads = numeric.rep(0, input_size);
     this.i_grads = numeric.rep(0, input_size);
-    this.final_grad = 0;
-    this.output = 0;
   }
 
   /***
    * Forwards the inputs through the neuron storing the intermediate
    * values which may be needed for for back propagation
-   * TODO: Change unnecessary class variables into local variables once
-   *       backprop/learning is working
    **/
   forward(inputs) {
     this.inputs = inputs;
-    this.agg_inputs = this.aggregation(inputs);
-    this.output = this.activation(this.agg_inputs);
-    return this.output;
+    let agg_inputs = this.aggregation(inputs);
+    return this.activation(agg_inputs);
   }
 
   /***
-  * Aggregation function to join all the inputs together for
+  * Aggregation function to combine all the inputs together for
   * activation
   **/
   aggregation(inputs) {
-    let weighted = numeric.mul(inputs, this.weights);
-    let weightedSum = numeric.sum(weighted);
-    return weightedSum;
+    let weighted_i = numeric.mul(inputs, this.weights);
+    return numeric.sum(weighted_i);
   }
 
   /***
@@ -59,9 +53,8 @@ class Neuron {
    * to be used to learn
    **/
   backpropagate(grad) {
-    this.final_grad = grad;
-    this.pre_act_grad = this.derive_activation(grad);
-    let grads = this.derive_aggregation(grad);
+    let pre_act_grad = this.derive_activation(grad)
+    let grads = this.derive_aggregation(pre_act_grad);
     this.i_grads = grads[0];
     this.w_grads = grads[1];
     return this.i_grads;
@@ -87,7 +80,7 @@ class Neuron {
     // inner function, we can focus on inputs*weights.
     // this means each gradient is now just input*weights
     // so we are looking at a linear function a(w, i) = iw again.
-    // thus a'(w) = i
+    // thus a'(w) = i*w
     // (da/dW)
     let weight_grads = numeric.mul(this.inputs, grad);
     // (da/dI)
@@ -96,15 +89,16 @@ class Neuron {
   }
 
   /***
-   * Adjusts weights by a fraction (step_size) of the gradients
+   * Adjusts weights by a fraction (learning_rate) of the gradients
    * (w_grad) calculated with respect to the weights/
    **/
-  learn_from_grads(step_size) {
-    step_size = (step_size === undefined) ? 0.005 : step_size;
+  learn_from_grads(learning_rate) {
+    learning_rate = (learning_rate === undefined) ? 0.005 : learning_rate;
     let regularised_grads = numeric.sub(this.w_grads, this.weights);
-    let step = numeric.mul(regularised_grads, step_size);
-    this.weights = numeric.add(this.weights, step);
+    let step = numeric.mul(regularised_grads, learning_rate);
+    // let step = numeric.mul(this.w_grads, learning_rate);
+    this.weights = numeric.sub(this.weights, step);
   }
 }
-//
+// Export Neuron class
 module.exports = { Neuron }
