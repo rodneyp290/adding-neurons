@@ -24,4 +24,8 @@ function create_random_int_array (n, high, low) {
   return array;
 }
 
-module.exports = { create_random_array, create_random_int_array, seed_random, random_float }
+function round_n_places(number, places) {
+  return Math.round((number * (10**places)))/(10**places)
+}
+
+module.exports = { create_random_array, create_random_int_array, seed_random, random_float, round_n_places }
