@@ -89,13 +89,14 @@ class Neuron {
   }
 
   /***
-   * Adjusts weights by a fraction (step_size) of the gradients
+   * Adjusts weights by a fraction (learning_rate) of the gradients
    * (w_grad) calculated with respect to the weights/
    **/
-  learn_from_grads(step_size) {
-    step_size = (step_size === undefined) ? 0.005 : step_size;
+  learn_from_grads(learning_rate) {
+    learning_rate = (learning_rate === undefined) ? 0.005 : learning_rate;
     let regularised_grads = numeric.sub(this.w_grads, this.weights);
-    let step = numeric.mul(regularised_grads, step_size);
+    let step = numeric.mul(regularised_grads, learning_rate);
+    // let step = numeric.mul(this.w_grads, learning_rate);
     this.weights = numeric.sub(this.weights, step);
   }
 }
