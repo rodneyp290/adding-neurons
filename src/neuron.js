@@ -53,8 +53,8 @@ class Neuron {
    * to be used to learn
    **/
   backpropagate(grad) {
-    let pre_act_grad = this.derive_activation(grad)
-    let grads = this.derive_aggregation(pre_act_grad);
+    let pre_act_grad = this.backprop_activation(grad)
+    let grads = this.backprop_aggregation(pre_act_grad);
     this.i_grads = grads[0];
     this.w_grads = grads[1];
     return this.i_grads;
@@ -64,7 +64,7 @@ class Neuron {
    * Calculates the gradient pre-activation given the
    * resulting gradient
    **/
-  derive_activation(grad) {
+  backprop_activation(grad) {
     // a(z) = z, therefore using the power rule
     // a'(z) = 1;
     return 1 * grad;
@@ -74,7 +74,7 @@ class Neuron {
    * Calculates the gradients pre-aggregation in respects to
    * each weight, given the resulting gradient
    **/
-  derive_aggregation(grad) {
+  backprop_aggregation(grad) {
     // a(inputs) = sum(inputs*weights);
     // since derivative of sum is equal to sum of derivatives
     // inner function, we can focus on inputs*weights.
