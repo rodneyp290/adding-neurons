@@ -70,14 +70,19 @@ for (let epoch = 0; epoch < total_epoch; epoch++) {
     let inputs = training_set[i][0];
     let label = training_set[i][1];
     let output = n.forward(inputs);
-    //let c = cost(label,output);
+
+    //let c = cost(label,output); // Not actually needed
     let dc = cost_derivative(label,output);
-    if ( i > 0 && !(isFinite(dc) && isFinite(output) && isFinite(n.w_grads[0]) && isFinite(n.i_grads[0]))) {
+
+    n.backpropagate(dc);
+    n.learn_from_grads(lr);
+
+    // Check for infinite numbers
+    if (!(isFinite(dc) && isFinite(output) && isFinite(n.w_grads[0]) && isFinite(n.i_grads[0]))) {
       console.error("AHHH! INFINITE NUMBERS!!");
       process.exit(1);
     }
-    n.backpropagate(dc);
-    n.learn_from_grads(lr);
+
   }
 
   console.log('epoch ' + (epoch + 1) + '/' + total_epoch + ' completed');
